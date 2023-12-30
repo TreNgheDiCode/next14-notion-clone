@@ -8,7 +8,7 @@ import {
   Settings,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
-import { ElementRef, useEffect, useRef, useState } from "react";
+import { ElementRef, useCallback, useEffect, useRef, useState } from "react";
 import { useMediaQuery } from "usehooks-ts";
 
 import { cn } from "@/lib/utils";
@@ -29,14 +29,6 @@ export const Navigation = () => {
   const navbarRef = useRef<ElementRef<"div">>(null);
   const [isResetting, setIsResetting] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(isMobile);
-
-  useEffect(() => {
-    if (isMobile) {
-      collapse();
-    } else {
-      resetWidth();
-    }
-  }, [isMobile]);
 
   useEffect(() => {
     if (isMobile) {
@@ -78,7 +70,7 @@ export const Navigation = () => {
     document.removeEventListener("mouseup", handleMouseUp);
   };
 
-  const resetWidth = () => {
+  const resetWidth = useCallback(() => {
     if (sidebarRef.current && navbarRef.current) {
       setIsCollapsed(false);
       setIsResetting(true);
@@ -91,7 +83,15 @@ export const Navigation = () => {
       navbarRef.current.style.setProperty("left", isMobile ? "100%" : "240px");
       setTimeout(() => setIsResetting(false), 300);
     }
-  };
+  }, [isMobile]);
+
+  useEffect(() => {
+    if (isMobile) {
+      collapse();
+    } else {
+      resetWidth();
+    }
+  }, [isMobile, resetWidth]);
 
   const collapse = () => {
     if (sidebarRef.current && navbarRef.current) {
