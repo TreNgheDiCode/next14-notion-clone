@@ -46,9 +46,11 @@ export const Navbar = ({ isCollapsed, onResetWidth }: NavbarProps) => {
         )}
         <div className="flex w-full items-center justify-between">
           <Title initialData={document} />
-          <div className="flex items-center gap-x-2">
-            <Menu documentId={document._id} />
-          </div>
+          {!document.isArchived && (
+            <div className="flex items-center gap-x-2">
+              <Menu documentId={document._id} />
+            </div>
+          )}
         </div>
       </nav>
       {document.isArchived && <Banner documentId={document._id} />}
